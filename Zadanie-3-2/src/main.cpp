@@ -5,16 +5,17 @@
 #define ledRed 3
 #define ledGreen 1
 #define ledBlue 2
+#define sterSilnik 10
 LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 void dispMenu (void) ;
-
+void runFun (void);
 void changeMenu (void);
 void readTimperature (void);
 void changeRGB (void);
 int menu = 1;
 bool psButonUp = HIGH;
 bool psButonDown = HIGH;
-
+float motor_spid = 0.0f;
 float temperature = 0.0f;
 /*
 byte stopnie[8] = {                //konfigurajca znaku stopnie
@@ -45,6 +46,8 @@ void loop() {
   changeMenu();
   readTimperature();
   changeRGB();
+
+  runFun();
 }
 
 void dispMenu (void) {
@@ -63,7 +66,11 @@ void dispMenu (void) {
     break;
   case 2:
     lcd.setCursor(0,0);
-    lcd.print("Menu 2");
+    lcd.print("spid_wentylator");
+    lcd.setCursor(4,1);
+    lcd.print(motor_spid);
+    lcd.print("%");
+
     break;
   case 3:
     lcd.setCursor(0,0);
@@ -115,4 +122,20 @@ void changeRGB (void)
   analogWrite(ledRed, 0+change);
   analogWrite(ledGreen, 0);
   analogWrite(ledBlue, 255-change);
+}
+
+void runFun (void)
+{
+  
+  float change = (temperature+40.0f) *255.0f/(125.0f + 40.0f);
+  if (temperature > 40.0f )
+  {
+    
+  analogWrite(sterSilnik, 0+change);
+  }
+  else
+  {
+    analogWrite(sterSilnik, 0);
+  }
+  motor_spid = change * 100.0f;
 }

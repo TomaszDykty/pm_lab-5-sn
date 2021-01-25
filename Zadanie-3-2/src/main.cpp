@@ -2,13 +2,15 @@
 #include <LiquidCrystal.h>
 #define butonUp 11
 #define butonDown 13
-
+#define ledRed 3
+#define ledGreen 1
+#define ledBlue 2
 LiquidCrystal lcd(9, 8, 7, 6, 5, 4);
 void dispMenu (void) ;
 
 void changeMenu (void);
 void readTimperature (void);
-
+void changeRGB (void);
 int menu = 1;
 bool psButonUp = HIGH;
 bool psButonDown = HIGH;
@@ -31,8 +33,10 @@ void setup() {
   lcd.begin(16, 2);
 pinMode (butonUp,INPUT_PULLUP);
 pinMode (butonDown,INPUT_PULLUP);
-
-//lcd.createChar(1, stopnie); //nie działało poprawnie podczas symulacji
+pinMode (ledBlue,OUTPUT);
+pinMode (ledGreen,OUTPUT);
+pinMode (ledRed,OUTPUT);
+//lcd.createChar(0, stopnie); //nie działało poprawnie podczas symulacji
   //lcd.print("Tomasz Dykty");
 }
 
@@ -40,6 +44,7 @@ void loop() {
   dispMenu ();
   changeMenu();
   readTimperature();
+  changeRGB();
 }
 
 void dispMenu (void) {
@@ -52,7 +57,7 @@ void dispMenu (void) {
     lcd.setCursor(0,1);
     lcd.print(temperature);
     lcd.setCursor(6,1);
-   // lcd.print((char)1); //nie działało poprawnie podczas symulacji ze względu na zakłucenia i błędy w co 4 symulacji usunełem
+   // lcd.print((char)0); //nie działało poprawnie podczas symulacji ze względu a wcześniej dało się kompilować na zakłucenia i błędy w co 4 symulacji usunełem
     lcd.print("C");
     
     break;
@@ -101,4 +106,13 @@ void readTimperature (void)
   float voltage = resolution * digital;
   temperature = (voltage-0.1f) *(125.0f+40.0f) / (1.75f-0.1f)-40.0f;
 
+}
+
+
+void changeRGB (void)
+{
+  float change = (temperature+40.0f) *255.0f/(125.0f + 40.0f);
+  analogWrite(ledRed, 0+change);
+  analogWrite(ledGreen, 0);
+  analogWrite(ledBlue, 255-change);
 }

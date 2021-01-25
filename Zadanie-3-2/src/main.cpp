@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <LiquidCrystal.h>
 
 void setup() {
   // zadanie sprawdzające

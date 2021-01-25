@@ -12,12 +12,17 @@ void runFun (void);
 void changeMenu (void);
 void readTimperature (void);
 void changeRGB (void);
+void time (void);
 int menu = 1;
+int time_s = 0;
+int time_m = 0;
+unsigned int time_h = 0;
+unsigned long poprzedniCzas = 0;
 bool psButonUp = HIGH;
 bool psButonDown = HIGH;
 float motor_spid = 0.0f;
 float temperature = 0.0f;
-/*
+
 byte stopnie[8] = {                //konfigurajca znaku stopnie
   0b00111,
   0b00101,
@@ -28,7 +33,7 @@ byte stopnie[8] = {                //konfigurajca znaku stopnie
   0b00000,
   0b00000
 };
-*/
+
 
 void setup() {
   lcd.begin(16, 2);
@@ -37,7 +42,7 @@ pinMode (butonDown,INPUT_PULLUP);
 pinMode (ledBlue,OUTPUT);
 pinMode (ledGreen,OUTPUT);
 pinMode (ledRed,OUTPUT);
-//lcd.createChar(0, stopnie); //nie działało poprawnie podczas symulacji
+lcd.createChar(0, stopnie); //nie działało poprawnie podczas symulacji
   //lcd.print("Tomasz Dykty");
 }
 
@@ -46,7 +51,7 @@ void loop() {
   changeMenu();
   readTimperature();
   changeRGB();
-
+  time ();
   runFun();
 }
 
@@ -60,7 +65,7 @@ void dispMenu (void) {
     lcd.setCursor(0,1);
     lcd.print(temperature);
     lcd.setCursor(6,1);
-   // lcd.print((char)0); //nie działało poprawnie podczas symulacji ze względu a wcześniej dało się kompilować na zakłucenia i błędy w co 4 symulacji usunełem
+  lcd.print((char)0); //nie działało poprawnie podczas symulacji ze względu a wcześniej dało się kompilować na zakłucenia i błędy w co 4 symulacji usunełem
     lcd.print("C");
     
     break;
@@ -74,7 +79,16 @@ void dispMenu (void) {
     break;
   case 3:
     lcd.setCursor(0,0);
-    lcd.print("Menu 3");
+    lcd.print("czas:");
+    lcd.setCursor(4,1);
+    lcd.print(time_h);
+    lcd.print(":");
+    lcd.print(time_m);
+    lcd.print(":");
+    lcd.print(time_s);
+    
+
+
     break;
   
   }
@@ -138,4 +152,48 @@ void runFun (void)
     analogWrite(sterSilnik, 0);
   }
   motor_spid = change * 100.0f;
+}
+
+void time (void) //liczymy czas
+{
+
+  if (millis()-poprzedniCzas>1000)   // dodanie s co sekundę będzie poprawnie działać przez ok 54 dni potem będzie zerowanie millis() co może spowodować że będze w nie takcie
+  {
+      poprzedniCzas=millis();  
+   if (time_s < 60)
+    {
+      ++time_s;
+    }
+    else
+    {
+      time_s = 0;
+      ++time_m;
+    }
+  }
+  
+ 
+
+  if (time_m < 60)
+    {
+      
+    }
+  else
+  {
+    time_m = 0;
+    ++time_h;
+  }
+  
+  if (time_h < 24)
+  {
+    
+  }
+  else
+  {
+    time_h = 0;
+  }  
+
+
+
+
+
 }

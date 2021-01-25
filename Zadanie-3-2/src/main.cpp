@@ -8,6 +8,8 @@ void dispMenu (void) ;
 
 void changeMenu (void);
 int menu = 1;
+bool psButonUp = HIGH;
+bool psButonDown = HIGH;
 
 void setup() {
   lcd.begin(16, 2);
@@ -46,19 +48,23 @@ void dispMenu (void) {
 
 void changeMenu (void)
 {
-  if (digitalRead(butonUp) == HIGH)
+  if (digitalRead(butonUp) == HIGH && psButonUp == LOW)
   {
+    psButonUp = HIGH;
     ++menu ;
     if(menu>3) 
     {menu=1;}
-  //  delay(500);  zmień na funkcje milis 0,5s
+  
   }
-  if (digitalRead(butonDown) == HIGH)
+  if (digitalRead(butonDown) == HIGH && psButonDown == LOW)
   {
+    psButonDown = HIGH;
     --menu ;
     if(menu<1) 
     {menu=3;}
-   // delay(500);
+   
   }
+  psButonUp = digitalRead(butonUp);
+  psButonDown = digitalRead(butonDown);
 
 }
